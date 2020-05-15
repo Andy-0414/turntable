@@ -1,23 +1,30 @@
 <template>
 	<div
+		@click="start"
 		class="turntable"
 		:style="{
-			width: size + 'px',
-			height: size + 'px',
-			transform: 'rotate(' + rotate + 'deg)',
+			width: size,
+			height: size,
 		}"
 	>
 		<div
-			class="fill"
-			:class="{ select: result == idx }"
-			v-for="(item, idx) in data"
-			:key="item.content"
-			:style="getStyleForSectorForm(idx)"
-			ref="fill"
+			class="wrapper"
+			:style="{
+				transform: `rotate3d(0,0,1,${rotate}deg)`,
+			}"
 		>
-			<p class="fill__content" :style="getStyleForText(idx)">
-				{{ item.content }}
-			</p>
+			<div
+				class="fill"
+				:class="{ select: result == idx }"
+				v-for="(item, idx) in data"
+				:key="item.content"
+				:style="getStyleForSectorForm(idx)"
+				ref="fill"
+			>
+				<p class="fill__content" :style="getStyleForText(idx)">
+					{{ item.content }}
+				</p>
+			</div>
 		</div>
 	</div>
 </template>
@@ -33,39 +40,44 @@ export default Vue.extend({
 			required: true,
 			default: [],
 		},
-		size: { type: Number as PropType<Number>, default: 400 },
+		size: { type: Number as PropType<Number>, default: "500px" },
 	},
 	data() {
 		return {
-			rotate: 0,
-			result: -1,
-			isStart: false,
+			rotate: (Math.random() * 360) as number, // 돌림판의 각도
+			result: -1 as number, // 결과 번호
+			isStart: false as boolean, // 돌림판 돌리기가 시작 했는지 확인
+			acc: 0 as number, // 돌림판 가속도
 		};
 	},
 	mounted() {
-		addEventListener("keydown", (e: KeyboardEvent) => {
-			if (e.keyCode == 38) {
-				this.start();
-			}
-			if (e.keyCode == 40) {
-				this.rotate -= 10;
+		addEventListener("devicemotion", (e: DeviceMotionEvent) => {
+			let x: number | null = e.acceleration!.x;
+			if (x && x! > 40) {
+				// 휴대폰을 흔들 때
+				this.start(); // 돌리기 시작
+				if (this.acc > 3 && this.acc < 25) this.acc += 5; // 이미 돌리는 중이라면 가속을 붙여서 계속 돌게함
 			}
 		});
 	},
 	methods: {
 		async start() {
-			console.log("START");
+			// 이미 돌림판이 돌아가고있는지 확인
 			if (!this.isStart) {
+				//초기화
 				this.isStart = true;
+				this.result = -1;
 
-				let acc = 10 + Math.random() * 10;
+				// 가속도를 20+random(5)만큼 주어짐
+				this.acc = 20 + Math.random() * 10;
 				const wait = async (ms: number) =>
 					new Promise((r) => setTimeout(() => r(), ms));
-				while (acc > 0.1) {
-					await wait(10);
-					acc /= 1.01;
-					this.rotate += acc;
+				while (this.acc > 0.01) {
+					await wait(10); // 초당 100번 실행
+					this.acc /= 1.015; // 감속
+					this.rotate += this.acc; // 가속도만큼 회전값에 더함
 				}
+				this.result = this.checkSelect(); // 결과를 확인
 				this.isStart = false;
 			}
 		},
@@ -208,11 +220,6 @@ export default Vue.extend({
 				90}deg);`;
 		},
 	},
-	watch: {
-		rotate() {
-			this.result = this.checkSelect();
-		},
-	},
 	computed: {
 		getWeightSum(): number {
 			return this.data
@@ -228,6 +235,28 @@ export default Vue.extend({
 	position: relative;
 	width: 400px;
 	height: 400px;
+
+	max-width: calc(100vw - 40px);
+	max-height: calc(100vw - 40px);
+	&::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 50%;
+
+		clip-path: polygon(0% 0%, 50% 100%, 100% 0%);
+		transform: translate(-50%, -75%);
+
+		width: 25px;
+		height: 50px;
+		background-color: white;
+
+		z-index: 1000;
+	}
+	.wrapper {
+		width: 100%;
+		height: 100%;
+	}
 	.fill {
 		position: absolute;
 		top: 0;
@@ -236,6 +265,8 @@ export default Vue.extend({
 		height: 100%;
 		border-radius: 50%;
 		background: lightcoral;
+
+		transition: width 0.2s, height 0.2s, top 0.2s, left 0.2s;
 
 		&:nth-child(2n) {
 			background-color: lightblue;
@@ -249,9 +280,6 @@ export default Vue.extend({
 		&:nth-child(5n) {
 			background-color: lightsalmon;
 		}
-		&.select {
-			background-color: red;
-		}
 		.fill__content {
 			position: absolute;
 			left: 50%;
@@ -261,6 +289,17 @@ export default Vue.extend({
 
 			font-size: 1.5em;
 			font-weight: bold;
+
+			transition: font-size 0.2s;
+		}
+		&.select {
+			.fill__content {
+				font-size: 2em;
+			}
+			top: -5%;
+			left: -5%;
+			width: 110%;
+			height: 110%;
 		}
 	}
 }

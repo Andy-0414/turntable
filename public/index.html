@@ -1,17 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title><%= htmlWebpackPlugin.options.title %></title>
-  </head>
-  <body>
-    <noscript>
-      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-  </body>
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+		<link rel="icon" href="<%= BASE_URL %>favicon.ico" />
+
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="theme-color" content="#222222" />
+
+		<meta name="title" content="돌려돌려 돌림판" />
+		<meta name="subject" content="돌림판 추첨 사이트" />
+		<meta name="description" content="돌림판 추첨 사이트" />
+		<meta name="keywords" content="돌림판,돌려돌려,추첨,랜덤,추첨" />
+		<meta property="og:title" content="동아리 관리 솔루션 circles." />
+		<meta property="og:description" content="돌림판 추첨 사이트" />
+		<meta
+			property="og:url"
+			content="https://andy-0414.github.io/turntable/"
+		/>
+		<!-- <meta property="og:image" content="<%= BASE_URL %>img.png" /> -->
+		<meta property="og:type" content="website" />
+
+		<title>돌려돌려 돌림판</title>
+	</head>
+	<body>
+		<noscript>
+			<strong>자바스크립트를 활성화 해 주세요.</strong>
+		</noscript>
+		<div id="app"></div>
+		<!-- built files will be auto injected -->
+	</body>
 </html>
