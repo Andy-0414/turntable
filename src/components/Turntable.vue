@@ -26,6 +26,13 @@
 				</p>
 			</div>
 		</div>
+		<button
+			@click="iOSPermission"
+			style="position:fixed; top:0; left:0;"
+			v-if="isIOS"
+		>
+			IOS 권한 요청
+		</button>
 	</div>
 </template>
 
@@ -61,31 +68,7 @@ export default Vue.extend({
 				}
 			});
 		};
-
-		// 아이폰일 시
-		if (
-			navigator.userAgent.match(/iPhone/i) ||
-			navigator.userAgent.match(/iPod/i)
-		) {
-			// 권한 요청이 가능하면 실행
-			if (
-				typeof (DeviceMotionEvent as any).requestPermission ===
-				"function"
-			) {
-				(DeviceMotionEvent as any)
-					.requestPermission()
-					.then((permissionState: string) => {
-						if (permissionState === "granted") {
-							return setDeviceMotion();
-						}
-					})
-					.catch(console.error);
-			} else {
-				return setDeviceMotion();
-			}
-		} else {
-			return setDeviceMotion();
-		}
+		setDeviceMotion();
 	},
 	methods: {
 		async start() {
@@ -106,6 +89,24 @@ export default Vue.extend({
 				}
 				this.result = this.checkSelect(); // 결과를 확인
 				this.isStart = false;
+			}
+		},
+		iOSPermission() {
+			// 권한 요청이 가능하면 실행
+			if (
+				typeof (DeviceMotionEvent as any).requestPermission ===
+				"function"
+			) {
+				(DeviceMotionEvent as any)
+					.requestPermission()
+					.then((permissionState: string) => {
+						if (permissionState === "granted") {
+							alert("true");
+						}
+					})
+					.catch(console.error);
+			} else {
+				alert("false");
 			}
 		},
 		degreesToRadians(degrees: number): number {
@@ -252,6 +253,9 @@ export default Vue.extend({
 			return this.data
 				.map((item) => Number(item.weight))
 				.reduce((x, y) => x + y);
+		},
+		isIOS() {
+			return navigator.userAgent.match(/i(Phone|Pod)/i) != null;
 		},
 	},
 });
