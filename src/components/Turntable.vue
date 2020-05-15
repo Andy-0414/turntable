@@ -55,20 +55,13 @@ export default Vue.extend({
 			result: -1 as number, // 결과 번호
 			isStart: false as boolean, // 돌림판 돌리기가 시작 했는지 확인
 			acc: 0 as number, // 돌림판 가속도
+			permissionCheck: false, // 가속도계 권한 체크
 		};
 	},
 	mounted() {
-		const setDeviceMotion = () => {
-			addEventListener("devicemotion", (e: DeviceMotionEvent) => {
-				let x: number | null = e.acceleration!.x;
-				if (x && x! > 40) {
-					// 휴대폰을 흔들 때
-					this.start(); // 돌리기 시작
-					if (this.acc > 3 && this.acc < 25) this.acc += 5; // 이미 돌리는 중이라면 가속을 붙여서 계속 돌게함
-				}
-			});
-		};
-		setDeviceMotion();
+		if (!this.isIOS) {
+			this.setDeviceMotion();
+		}
 	},
 	methods: {
 		async start() {
@@ -91,6 +84,19 @@ export default Vue.extend({
 				this.isStart = false;
 			}
 		},
+		setDeviceMotion() {
+			if (!this.permissionCheck) {
+				this.permissionCheck = true;
+				addEventListener("devicemotion", (e: DeviceMotionEvent) => {
+					let x: number | null = e.acceleration!.x;
+					if (x && x! > 40) {
+						// 휴대폰을 흔들 때
+						this.start(); // 돌리기 시작
+						if (this.acc > 3 && this.acc < 25) this.acc += 5; // 이미 돌리는 중이라면 가속을 붙여서 계속 돌게함
+					}
+				});
+			}
+		},
 		iOSPermission() {
 			// 권한 요청이 가능하면 실행
 			if (
@@ -101,12 +107,10 @@ export default Vue.extend({
 					.requestPermission()
 					.then((permissionState: string) => {
 						if (permissionState === "granted") {
-							alert("true");
+							this.setDeviceMotion();
 						}
 					})
 					.catch(console.error);
-			} else {
-				alert("false");
 			}
 		},
 		degreesToRadians(degrees: number): number {
@@ -254,8 +258,11 @@ export default Vue.extend({
 				.map((item) => Number(item.weight))
 				.reduce((x, y) => x + y);
 		},
-		isIOS() {
-			return navigator.userAgent.match(/i(Phone|Pod)/i) != null;
+		isIOS(): boolean {
+			return (
+				navigator.userAgent.match(/i(Phone|Pod)/i) != null &&
+				!this.permissionCheck
+			);
 		},
 	},
 });
