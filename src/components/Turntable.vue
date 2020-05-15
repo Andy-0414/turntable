@@ -9,7 +9,7 @@
 	>
 		<div
 			class="fill"
-			:class="{ select: checkSelect(idx) }"
+			:class="{ select: result == idx }"
 			v-for="(item, idx) in data"
 			:key="item.content"
 			:style="getStyleForSectorForm(idx)"
@@ -38,12 +38,14 @@ export default Vue.extend({
 	data() {
 		return {
 			rotate: 0,
+			result: -1,
+			isStart: false,
 		};
 	},
 	mounted() {
 		addEventListener("keydown", (e: KeyboardEvent) => {
 			if (e.keyCode == 38) {
-				this.rotate += 10;
+				this.start();
 			}
 			if (e.keyCode == 40) {
 				this.rotate -= 10;
@@ -51,6 +53,22 @@ export default Vue.extend({
 		});
 	},
 	methods: {
+		async start() {
+			console.log("START");
+			if (!this.isStart) {
+				this.isStart = true;
+
+				let acc = 10 + Math.random() * 10;
+				const wait = async (ms: number) =>
+					new Promise((r) => setTimeout(() => r(), ms));
+				while (acc > 0.1) {
+					await wait(10);
+					acc /= 1.01;
+					this.rotate += acc;
+				}
+				this.isStart = false;
+			}
+		},
 		degreesToRadians(degrees: number): number {
 			return degrees * (Math.PI / 180);
 		},
@@ -63,26 +81,16 @@ export default Vue.extend({
 					(this.data[idx].weight / this.getWeightSum) * 360
 				);
 		},
-		checkSelect(idx: number) {
-			let angle = 360 - (Math.abs(this.rotate+90) % 360);
-
-			let currentAngle =
-				(this.data[idx].weight / this.getWeightSum) * 360;
-			let endAngle = this.getEndPointBySectorForm(idx);
-			let startAngle = endAngle - currentAngle;
-
-			console.log(startAngle, endAngle, angle);
-			// endAngle = this.degreesToRadians(endAngle);
-			// startAngle = this.degreesToRadians(startAngle);
-
-			// let x1 = Math.cos(startAngle);
-			// let y1 = Math.sin(startAngle);
-			// let x2 = Math.cos(endAngle);
-			// let y2 = Math.sin(endAngle);
-			// let xp = Math.cos(angle);
-			// let yp = Math.sin(angle);
-
-			return startAngle <= angle && endAngle >= angle;
+		checkSelect(): number {
+			let angle = 360 - (Math.abs(this.rotate + 90) % 360);
+			for (let i = 0; i < this.data.length; i++) {
+				let currentAngle =
+					(this.data[i].weight / this.getWeightSum) * 360;
+				let endAngle = this.getEndPointBySectorForm(i);
+				let startAngle = endAngle - currentAngle;
+				if (startAngle <= angle && endAngle >= angle) return i;
+			}
+			return -1;
 		},
 		getStyleForSectorForm(idx: number): string {
 			let currentAngle =
@@ -200,6 +208,11 @@ export default Vue.extend({
 				90}deg);`;
 		},
 	},
+	watch: {
+		rotate() {
+			this.result = this.checkSelect();
+		},
+	},
 	computed: {
 		getWeightSum(): number {
 			return this.data
@@ -223,8 +236,6 @@ export default Vue.extend({
 		height: 100%;
 		border-radius: 50%;
 		background: lightcoral;
-
-		transition: 0.2s;
 
 		&:nth-child(2n) {
 			background-color: lightblue;

@@ -34,14 +34,47 @@ body,
 	width: 100%;
 	height: 100%;
 }
+button {
+	cursor: pointer;
+	background-color: #222222;
+	border: none;
+	outline: none;
+	color: white;
+	padding: 10px;
 
+	font-size: 1em;
+
+	&:hover {
+		background-color: #333333;
+	}
+}
 input[type="text"] {
 	background-color: #222222;
 	border: none;
 	outline: none;
 	color: white;
 	padding: 10px;
-	
+
 	font-size: 1em;
+}
+
+input[type="range"] {
+	background-color: #222222;
+
+	outline: none;
+	-webkit-appearance: none;
+
+	font-size: 1em;
+
+	overflow: hidden;
+
+	&::-webkit-slider-thumb {
+		width: 10px;
+		height: 10px;
+		-webkit-appearance: none;
+		background: #36afff;
+		box-shadow: -100vw 0 0 100vw #36afff;
+		border: 0.1px solid #36afff;
+	}
 }
 </style>

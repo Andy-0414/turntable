@@ -16,23 +16,23 @@ export default Vue.extend({
 			items: [
 				{
 					content: "치킨",
-					weight: 90,
+					weight: 1,
 				},
 				{
 					content: "피자",
-					weight: 90,
+					weight: 1,
 				},
 				{
 					content: "부탄츄",
-					weight: 90,
+					weight: 1,
 				},
 				{
 					content: "편의점",
-					weight: 20,
+					weight: 1,
 				},
 				{
 					content: "집",
-					weight: 20,
+					weight: 1,
 				},
 			] as TurntableItem[],
 		};
@@ -49,6 +49,10 @@ export default Vue.extend({
 .home {
 	width: 100%;
 	height: 100%;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	.home__turntable {
 		margin: 20px;
 	}
