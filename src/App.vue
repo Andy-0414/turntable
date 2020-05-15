@@ -24,6 +24,8 @@ body,
 
 	font-size: 16px;
 	color: white;
+
+	overflow-y: hidden;
 }
 #app {
 	display: flex;
@@ -33,6 +35,8 @@ body,
 .router {
 	width: 100%;
 	height: 100%;
+	overflow: hidden;
+	overflow-y: auto;
 }
 button {
 	cursor: pointer;
@@ -76,5 +80,17 @@ input[type="range"] {
 		box-shadow: -100vw 0 0 100vw #36afff;
 		border: 0.1px solid #36afff;
 	}
+}
+::-webkit-scrollbar {
+	width: 5px;
+}
+::-webkit-scrollbar-thumb:window-inactive,
+::-webkit-scrollbar-thumb {
+	width: 5px;
+	background-color: #444444;
+}
+::-webkit-scrollbar-track {
+	width: 5px;
+	background-color: #111111;
 }
 </style>
