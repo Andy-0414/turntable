@@ -1,20 +1,13 @@
 <template>
 	<div class="home">
-		<Turntable :data="items" />
-		<input
-			type="range"
-			min="0"
-			max="90"
-			step="1"
-			v-model="items[0].weight"
-			@change="chkData"
-		/>
+		<Turntable class="home__turntable" :data="items" />
 	</div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import TurntableVue from "../components/Turntable.vue";
+import { TurntableItem } from "../models";
 export default Vue.extend({
 	data() {
 		return {
@@ -39,21 +32,22 @@ export default Vue.extend({
 					content: "집",
 					weight: 20,
 				},
-			],
+			] as TurntableItem[],
 		};
 	},
 	components: {
 		Turntable: TurntableVue,
 	},
-	methods: {
-		chkData() {
-			console.log(this.items);
-		},
-	},
+	methods: {},
 });
 </script>
 
 <style lang="scss" scoped>
 .home {
+	width: 100%;
+	height: 100%;
+	.home__turntable {
+		margin: 20px;
+	}
 }
 </style>

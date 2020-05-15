@@ -1,5 +1,5 @@
 <template>
-	<div class="turntable">
+	<div class="turntable" :style="{ width: size + 'px', height: size + 'px' }">
 		<div
 			class="fill"
 			v-for="(item, idx) in data"
@@ -12,10 +12,16 @@
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
+import { TurntableItem } from "@/models";
 export default Vue.extend({
 	name: "Turntable",
 	props: {
-		data: Array as PropType<any[]>,
+		data: {
+			type: Array as PropType<TurntableItem[]>,
+			required: true,
+			default: [],
+		},
+		size: { type: Number as PropType<Number>, default: 400 },
 	},
 	methods: {
 		degreesToRadians(degrees: number): number {
@@ -24,18 +30,11 @@ export default Vue.extend({
 		getEndPointBySectorForm(idx: number): number {
 			if (idx == 0)
 				return (this.data[idx].weight / this.getWeightSum) * 360;
-			else {
-				let sum = 0;
-				for (let i = 0; i <= idx; i++) {
-					sum += (this.data[i].weight / this.getWeightSum) * 360;
-				}
-				return sum;
-			}
-			// else
-			// 	return (
-			// 		this.getEndPointBySectorForm(idx - 1) +
-			// 		(this.data[idx].weight / this.getWeightSum) * 360
-			// 	);
+			else
+				return (
+					this.getEndPointBySectorForm(idx - 1) +
+					(this.data[idx].weight / this.getWeightSum) * 360
+				);
 		},
 		getStyleForSectorForm(idx: number): string {
 			let currentAngle =
@@ -43,19 +42,27 @@ export default Vue.extend({
 			let endAngle = this.getEndPointBySectorForm(idx);
 			let startAngle = endAngle - currentAngle;
 			let centerAngle = (startAngle + endAngle) / 2;
+			let quarterStartAngle = (startAngle + centerAngle) / 2;
+			let quarterEndAngle = (endAngle + centerAngle) / 2;
 
 			endAngle = this.degreesToRadians(endAngle);
 			startAngle = this.degreesToRadians(startAngle);
 			centerAngle = this.degreesToRadians(centerAngle);
+			quarterStartAngle = this.degreesToRadians(quarterStartAngle);
+			quarterEndAngle = this.degreesToRadians(quarterEndAngle);
 
 			let x1 = Math.cos(startAngle);
 			let y1 = Math.sin(startAngle);
-			let x2 = Math.cos(centerAngle) * 100;
-			let y2 = Math.sin(centerAngle) * 100;
-			let x3 = Math.cos(endAngle);
-			let y3 = Math.sin(endAngle);
+			let x2 = Math.cos(quarterStartAngle) * 100;
+			let y2 = Math.sin(quarterStartAngle) * 100;
+			let x3 = Math.cos(centerAngle) * 100;
+			let y3 = Math.sin(centerAngle) * 100;
+			let x4 = Math.cos(quarterEndAngle) * 100;
+			let y4 = Math.sin(quarterEndAngle) * 100;
+			let x5 = Math.cos(endAngle);
+			let y5 = Math.sin(endAngle);
 
-			// //dev code
+			//dev code
 			// this.$nextTick(() => {
 			// 	let p1 = document.createElement("p");
 			// 	p1.style.position = "absolute";
@@ -92,17 +99,44 @@ export default Vue.extend({
 			// 	p3.style.color = "white";
 			// 	p3.innerText = idx.toString();
 			// 	this.$el.appendChild(p3);
+
+			// 	let p4 = document.createElement("p");
+			// 	p4.style.position = "absolute";
+			// 	p4.style.zIndex = "100";
+			// 	p4.style.width = "20px";
+			// 	p4.style.height = "10px";
+			// 	p4.style.backgroundColor = "yellow";
+			// 	p4.style.top = 200 + y4 * 200 + "px";
+			// 	p4.style.left = 200 + x4 * 200 + "px";
+			// 	p4.style.color = "white";
+			// 	p4.innerText = idx.toString();
+			// 	this.$el.appendChild(p4);
+
+			// 	let p5 = document.createElement("p");
+			// 	p5.style.position = "absolute";
+			// 	p5.style.zIndex = "100";
+			// 	p5.style.width = "20px";
+			// 	p5.style.height = "10px";
+			// 	p5.style.backgroundColor = "cyan";
+			// 	p5.style.top = 200 + y5 * 200 + "px";
+			// 	p5.style.left = 200 + x5 * 200 + "px";
+			// 	p5.style.color = "white";
+			// 	p5.innerText = idx.toString();
+			// 	this.$el.appendChild(p5);
 			// });
 
-			return `
-			clip-path: polygon(50% 50%, ${50 + x1 * 50}% ${50 + y1 * 50}%, ${50 +
-				x2 * 50}% ${50 + y2 * 50}%, ${50 + x3 * 50}% ${50 +
-				y3 * 50}%);`;
+			return (
+				"clip-path: polygon(50% 50%," +
+				`${50 + x1 * 50}% ${50 + y1 * 50}%,` +
+				`${50 + x2 * 50}% ${50 + y2 * 50}%,` +
+				`${50 + x3 * 50}% ${50 + y3 * 50}%,` +
+				`${50 + x4 * 50}% ${50 + y4 * 50}%,` +
+				`${50 + x5 * 50}% ${50 + y5 * 50}%);`
+			);
 		},
 	},
 	computed: {
 		getWeightSum(): number {
-			console.log(this.data.map((item) => item.weight));
 			return this.data
 				.map((item) => Number(item.weight))
 				.reduce((x, y) => x + y);
@@ -113,19 +147,18 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .turntable {
+	position: relative;
 	width: 400px;
 	height: 400px;
-	position: relative;
 	.fill {
 		position: absolute;
 		top: 0;
 		left: 0;
-		width: 400px;
-		height: 400px;
+		width: 100%;
+		height: 100%;
 		border-radius: 50%;
 		background: lightcoral;
 		opacity: 0.5;
-		transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
 		&:nth-child(2n) {
 			background-color: lightblue;
