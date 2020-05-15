@@ -51,14 +51,41 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		addEventListener("devicemotion", (e: DeviceMotionEvent) => {
-			let x: number | null = e.acceleration!.x;
-			if (x && x! > 40) {
-				// 휴대폰을 흔들 때
-				this.start(); // 돌리기 시작
-				if (this.acc > 3 && this.acc < 25) this.acc += 5; // 이미 돌리는 중이라면 가속을 붙여서 계속 돌게함
+		const setDeviceMotion = () => {
+			addEventListener("devicemotion", (e: DeviceMotionEvent) => {
+				let x: number | null = e.acceleration!.x;
+				if (x && x! > 40) {
+					// 휴대폰을 흔들 때
+					this.start(); // 돌리기 시작
+					if (this.acc > 3 && this.acc < 25) this.acc += 5; // 이미 돌리는 중이라면 가속을 붙여서 계속 돌게함
+				}
+			});
+		};
+
+		// 아이폰일 시
+		if (
+			navigator.userAgent.match(/iPhone/i) ||
+			navigator.userAgent.match(/iPod/i)
+		) {
+			// 권한 요청이 가능하면 실행
+			if (
+				typeof (DeviceMotionEvent as any).requestPermission ===
+				"function"
+			) {
+				(DeviceMotionEvent as any)
+					.requestPermission()
+					.then((permissionState: string) => {
+						if (permissionState === "granted") {
+							return setDeviceMotion();
+						}
+					})
+					.catch(console.error);
+			} else {
+				return setDeviceMotion();
 			}
-		});
+		} else {
+			return setDeviceMotion();
+		}
 	},
 	methods: {
 		async start() {
