@@ -21,8 +21,11 @@ body,
 	background-color: #333333;
 	width: 100vw;
 	height: 100vh;
+
+	font-size: 16px;
+	color: white;
 }
-#app{
+#app {
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -30,5 +33,15 @@ body,
 .router {
 	width: 100%;
 	height: 100%;
+}
+
+input[type="text"] {
+	background-color: #222222;
+	border: none;
+	outline: none;
+	color: white;
+	padding: 10px;
+	
+	font-size: 1em;
 }
 </style>

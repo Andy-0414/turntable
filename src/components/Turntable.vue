@@ -1,12 +1,24 @@
 <template>
-	<div class="turntable" :style="{ width: size + 'px', height: size + 'px' }">
+	<div
+		class="turntable"
+		:style="{
+			width: size + 'px',
+			height: size + 'px',
+			transform: 'rotate(' + rotate + 'deg)',
+		}"
+	>
 		<div
 			class="fill"
+			:class="{ select: checkSelect(idx) }"
 			v-for="(item, idx) in data"
 			:key="item.content"
 			:style="getStyleForSectorForm(idx)"
 			ref="fill"
-		></div>
+		>
+			<p class="fill__content" :style="getStyleForText(idx)">
+				{{ item.content }}
+			</p>
+		</div>
 	</div>
 </template>
 
@@ -23,6 +35,21 @@ export default Vue.extend({
 		},
 		size: { type: Number as PropType<Number>, default: 400 },
 	},
+	data() {
+		return {
+			rotate: 0,
+		};
+	},
+	mounted() {
+		addEventListener("keydown", (e: KeyboardEvent) => {
+			if (e.keyCode == 38) {
+				this.rotate += 10;
+			}
+			if (e.keyCode == 40) {
+				this.rotate -= 10;
+			}
+		});
+	},
 	methods: {
 		degreesToRadians(degrees: number): number {
 			return degrees * (Math.PI / 180);
@@ -35,6 +62,27 @@ export default Vue.extend({
 					this.getEndPointBySectorForm(idx - 1) +
 					(this.data[idx].weight / this.getWeightSum) * 360
 				);
+		},
+		checkSelect(idx: number) {
+			let angle = 360 - (Math.abs(this.rotate+90) % 360);
+
+			let currentAngle =
+				(this.data[idx].weight / this.getWeightSum) * 360;
+			let endAngle = this.getEndPointBySectorForm(idx);
+			let startAngle = endAngle - currentAngle;
+
+			console.log(startAngle, endAngle, angle);
+			// endAngle = this.degreesToRadians(endAngle);
+			// startAngle = this.degreesToRadians(startAngle);
+
+			// let x1 = Math.cos(startAngle);
+			// let y1 = Math.sin(startAngle);
+			// let x2 = Math.cos(endAngle);
+			// let y2 = Math.sin(endAngle);
+			// let xp = Math.cos(angle);
+			// let yp = Math.sin(angle);
+
+			return startAngle <= angle && endAngle >= angle;
 		},
 		getStyleForSectorForm(idx: number): string {
 			let currentAngle =
@@ -134,6 +182,23 @@ export default Vue.extend({
 				`${50 + x5 * 50}% ${50 + y5 * 50}%);`
 			);
 		},
+		getStyleForText(idx: number) {
+			let currentAngle =
+				(this.data[idx].weight / this.getWeightSum) * 360;
+			let endAngle = this.getEndPointBySectorForm(idx);
+			let startAngle = endAngle - currentAngle;
+			let centerAngle = (startAngle + endAngle) / 2;
+
+			centerAngle = this.degreesToRadians(centerAngle);
+
+			let x = Math.cos(centerAngle) / (3 / 2);
+			let y = Math.sin(centerAngle) / (3 / 2);
+
+			return `top:${50 + y * 50}%;
+			left:${50 + x * 50}%;
+			transform: translate(-50%, -50%) rotate(${(startAngle + endAngle) / 2 +
+				90}deg);`;
+		},
 	},
 	computed: {
 		getWeightSum(): number {
@@ -158,7 +223,8 @@ export default Vue.extend({
 		height: 100%;
 		border-radius: 50%;
 		background: lightcoral;
-		opacity: 0.5;
+
+		transition: 0.2s;
 
 		&:nth-child(2n) {
 			background-color: lightblue;
@@ -172,8 +238,18 @@ export default Vue.extend({
 		&:nth-child(5n) {
 			background-color: lightsalmon;
 		}
-		&:hover {
+		&.select {
 			background-color: red;
+		}
+		.fill__content {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+
+			transform: translate(-50%, -50%);
+
+			font-size: 1.5em;
+			font-weight: bold;
 		}
 	}
 }

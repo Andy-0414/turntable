@@ -1,6 +1,7 @@
 <template>
 	<div class="home">
 		<Turntable class="home__turntable" :data="items" />
+		<TurntableItemList v-model="items" />
 	</div>
 </template>
 
@@ -8,6 +9,7 @@
 import Vue from "vue";
 import TurntableVue from "../components/Turntable.vue";
 import { TurntableItem } from "../models";
+import TurntableItemListVue from "../components/TurntableItemList.vue";
 export default Vue.extend({
 	data() {
 		return {
@@ -37,6 +39,7 @@ export default Vue.extend({
 	},
 	components: {
 		Turntable: TurntableVue,
+		TurntableItemList: TurntableItemListVue,
 	},
 	methods: {},
 });
