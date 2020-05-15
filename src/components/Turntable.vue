@@ -40,7 +40,7 @@ export default Vue.extend({
 			required: true,
 			default: [],
 		},
-		size: { type: Number as PropType<Number>, default: "500px" },
+		size: { type: String as PropType<String>, default: "500px" },
 	},
 	data() {
 		return {
