@@ -19,8 +19,13 @@ html,
 body,
 #app {
 	background-color: #333333;
-	width: 100vw;
-	height: 100vh;
+
+	position: fixed;
+	top: 0;
+	left: 0;
+
+	width: 100%;
+	height: 100%;
 
 	font-size: 16px;
 	color: white;
@@ -64,6 +69,7 @@ input[type="text"] {
 
 input[type="range"] {
 	background-color: #222222;
+	border-radius: 100px;
 
 	outline: none;
 	-webkit-appearance: none;

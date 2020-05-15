@@ -1,7 +1,7 @@
 <template>
 	<div class="home">
 		<Turntable class="home__turntable" :data="items" />
-		<TurntableItemList v-model="items" />
+		<TurntableItemList class="home__turntableItemList" v-model="items" />
 	</div>
 </template>
 
@@ -53,6 +53,14 @@ export default Vue.extend({
 	flex-wrap: wrap;
 	.home__turntable {
 		margin: 20px;
+	}
+	.home__turntableItemList {
+		max-height: 80vh;
+	}
+	@media (max-width: 940px) {
+		.home__turntableItemList {
+			max-height: none;
+		}
 	}
 }
 </style>

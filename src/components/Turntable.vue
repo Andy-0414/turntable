@@ -17,7 +17,7 @@
 				class="fill"
 				:class="{ select: result == idx }"
 				v-for="(item, idx) in data"
-				:key="item.content"
+				:key="idx"
 				:style="getStyleForSectorForm(idx)"
 				ref="fill"
 			>
@@ -28,7 +28,7 @@
 		</div>
 		<button
 			@click="iOSPermission"
-			style="position:fixed; top:0; left:0;"
+			style="position:fixed; bottom:0; left:0; width:100%;"
 			v-if="isIOS"
 		>
 			IOS 권한 요청
@@ -88,7 +88,7 @@ export default Vue.extend({
 			if (!this.permissionCheck) {
 				this.permissionCheck = true;
 				addEventListener("devicemotion", (e: DeviceMotionEvent) => {
-					let x: number | null = e.acceleration!.x;
+					let x: number | null = e.accelerationIncludingGravity!.x;
 					if (x && x! > 40) {
 						// 휴대폰을 흔들 때
 						this.start(); // 돌리기 시작
@@ -97,7 +97,8 @@ export default Vue.extend({
 				});
 			}
 		},
-		iOSPermission() {
+		iOSPermission(e: Event) {
+			e.stopImmediatePropagation();
 			// 권한 요청이 가능하면 실행
 			if (
 				typeof (DeviceMotionEvent as any).requestPermission ===
@@ -260,7 +261,8 @@ export default Vue.extend({
 		},
 		isIOS(): boolean {
 			return (
-				navigator.userAgent.match(/i(Phone|Pod)/i) != null &&
+				(navigator.userAgent.match(/i(Phone|Pod)/i) != null ||
+					navigator.userAgent.match(/Macintosh/i) != null) &&
 				!this.permissionCheck
 			);
 		},
@@ -270,6 +272,8 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .turntable {
+	cursor: pointer;
+	user-select: none;
 	position: relative;
 	width: 400px;
 	height: 400px;

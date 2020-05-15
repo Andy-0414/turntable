@@ -27,7 +27,7 @@
 				max="10"
 			/>
 		</li>
-		<button class="turntableItemList__addBtn" @click="add">+</button>
+		<li class="turntableItemList__addBtn" @click="add">+</li>
 	</ul>
 </template>
 
@@ -55,13 +55,13 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .turntableItemList {
 	width: 400px;
+	height: fit-content;
 	list-style: none;
 
-	display: flex;
-	flex-direction: column;
+	overflow-y: auto;
 	.turntableItemList__item {
 		padding: 10px;
-		margin: 10px;
+		margin: 20px;
 		box-shadow: 0px 0px 10px #222222;
 		background-color: #444444;
 
@@ -86,10 +86,14 @@ export default Vue.extend({
 		text-align: center;
 
 		padding: 10px;
-		margin: 10px;
+		margin: 20px;
 
 		box-shadow: 0px 0px 10px #222222;
 		background-color: #36afff;
+
+		width: auto;
+
+		font-weight: bold;
 	}
 }
 </style>
