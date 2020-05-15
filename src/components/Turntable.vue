@@ -236,8 +236,8 @@ export default Vue.extend({
 	width: 400px;
 	height: 400px;
 
-	max-width: calc(100vw - 40px);
-	max-height: calc(100vw - 40px);
+	max-width: calc(100vw - 50px);
+	max-height: calc(100vw - 50px);
 	&::after {
 		content: "";
 		position: absolute;
