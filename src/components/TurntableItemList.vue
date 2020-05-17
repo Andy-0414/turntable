@@ -1,10 +1,6 @@
 <template>
 	<ul class="turntableItemList">
-		<li
-			class="turntableItemList__item"
-			v-for="(item, idx) in items"
-			:key="idx"
-		>
+		<li class="turntableItemList__item" v-for="(item, idx) in items" :key="idx">
 			<div class="turntableItemList__wrapper">
 				<input
 					class="turntableItemList__item__content"
@@ -12,12 +8,7 @@
 					:placeholder="`항목${idx + 1}`"
 					v-model="item.content"
 				/>
-				<button
-					class="turntableItemList__item__delete"
-					@click="del(idx)"
-				>
-					D
-				</button>
+				<button class="turntableItemList__item__delete" @click="del(idx)">D</button>
 			</div>
 			<input
 				class="turntableItemList__item__range"
@@ -36,19 +27,19 @@ import Vue, { PropType } from "vue";
 import { TurntableItem } from "../models";
 export default Vue.extend({
 	model: {
-		prop: "items",
+		prop: "items"
 	},
 	props: {
-		items: { type: Array as PropType<TurntableItem[]> },
+		items: { type: Array as PropType<TurntableItem[]> }
 	},
 	methods: {
 		add() {
 			this.items.push({ content: "", weight: 1 });
 		},
 		del(idx: number) {
-			this.items.splice(idx, 1);
-		},
-	},
+			if (this.items.length > 1) this.items.splice(idx, 1);
+		}
+	}
 });
 </script>
 

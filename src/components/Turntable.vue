@@ -1,18 +1,11 @@
 <template>
-	<div
-		@click="start"
-		class="turntable"
-		:style="{
+	<div @click="start" class="turntable" :style="{
 			width: size,
 			height: size,
-		}"
-	>
-		<div
-			class="wrapper"
-			:style="{
+		}">
+		<div class="wrapper" :style="{
 				transform: `rotate3d(0,0,1,${rotate}deg)`,
-			}"
-		>
+			}">
 			<div
 				class="fill"
 				:class="{ select: result == idx }"
@@ -21,18 +14,14 @@
 				:style="getStyleForSectorForm(idx)"
 				ref="fill"
 			>
-				<p class="fill__content" :style="getStyleForText(idx)">
-					{{ item.content }}
-				</p>
+				<p class="fill__content" :style="getStyleForText(idx)">{{ item.content }}</p>
 			</div>
 		</div>
 		<button
 			@click="iOSPermission"
 			style="position:fixed; bottom:0; left:0; width:100%;"
 			v-if="isIOS"
-		>
-			IOS 권한 요청
-		</button>
+		>IOS 권한 요청</button>
 	</div>
 </template>
 
@@ -45,9 +34,9 @@ export default Vue.extend({
 		data: {
 			type: Array as PropType<TurntableItem[]>,
 			required: true,
-			default: [],
+			default: []
 		},
-		size: { type: String as PropType<String>, default: "500px" },
+		size: { type: String as PropType<String>, default: "500px" }
 	},
 	data() {
 		return {
@@ -55,7 +44,7 @@ export default Vue.extend({
 			result: -1 as number, // 결과 번호
 			isStart: false as boolean, // 돌림판 돌리기가 시작 했는지 확인
 			acc: 0 as number, // 돌림판 가속도
-			permissionCheck: false, // 가속도계 권한 체크
+			permissionCheck: false // 가속도계 권한 체크
 		};
 	},
 	mounted() {
@@ -72,13 +61,13 @@ export default Vue.extend({
 				this.result = -1;
 
 				// 가속도를 20+random(5)만큼 주어짐
-				this.acc = 20 + Math.random() * 10;
+				this.acc = 20 + Math.random() * 20;
 				const wait = async (ms: number) =>
-					new Promise((r) => setTimeout(() => r(), ms));
+					new Promise(r => setTimeout(() => r(), ms));
 				while (this.acc > 0.01) {
 					await wait(10); // 초당 100번 실행
-					this.acc /= 1.015; // 감속
-					this.rotate += this.acc; // 가속도만큼 회전값에 더함
+					this.acc /= 1.02; // 감속
+					this.rotate = (this.rotate + this.acc) % 360; // 가속도만큼 회전값에 더함
 				}
 				this.result = this.checkSelect(); // 결과를 확인
 				this.isStart = false;
@@ -88,8 +77,9 @@ export default Vue.extend({
 			if (!this.permissionCheck) {
 				this.permissionCheck = true;
 				addEventListener("devicemotion", (e: DeviceMotionEvent) => {
-					let x: number | null = e.accelerationIncludingGravity!.x;
-					if (x && x! > 40) {
+					let dmacc: DeviceMotionEventAcceleration | null =
+						e.accelerationIncludingGravity || e.acceleration;
+					if (dmacc && dmacc.x! > 35) {
 						// 휴대폰을 흔들 때
 						this.start(); // 돌리기 시작
 						if (this.acc > 3 && this.acc < 25) this.acc += 5; // 이미 돌리는 중이라면 가속을 붙여서 계속 돌게함
@@ -225,15 +215,14 @@ export default Vue.extend({
 			// 	p5.innerText = idx.toString();
 			// 	this.$el.appendChild(p5);
 			// });
-
-			return (
-				"clip-path: polygon(50% 50%," +
+			let polygonPath =
+				"50% 50%," +
 				`${50 + x1 * 50}% ${50 + y1 * 50}%,` +
 				`${50 + x2 * 50}% ${50 + y2 * 50}%,` +
 				`${50 + x3 * 50}% ${50 + y3 * 50}%,` +
 				`${50 + x4 * 50}% ${50 + y4 * 50}%,` +
-				`${50 + x5 * 50}% ${50 + y5 * 50}%);`
-			);
+				`${50 + x5 * 50}% ${50 + y5 * 50}%`;
+			return `-webkit-clip-path: polygon(${polygonPath}); clip-path: polygon(${polygonPath});`;
 		},
 		getStyleForText(idx: number) {
 			let currentAngle =
@@ -251,12 +240,12 @@ export default Vue.extend({
 			left:${50 + x * 50}%;
 			transform: translate(-50%, -50%) rotate(${(startAngle + endAngle) / 2 +
 				90}deg);`;
-		},
+		}
 	},
 	computed: {
 		getWeightSum(): number {
 			return this.data
-				.map((item) => Number(item.weight))
+				.map(item => Number(item.weight))
 				.reduce((x, y) => x + y);
 		},
 		isIOS(): boolean {
@@ -265,8 +254,8 @@ export default Vue.extend({
 					navigator.userAgent.match(/Macintosh/i) != null) &&
 				!this.permissionCheck
 			);
-		},
-	},
+		}
+	}
 });
 </script>
 
