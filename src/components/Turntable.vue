@@ -3,9 +3,7 @@
 			width: size,
 			height: size,
 		}">
-		<div class="wrapper" :style="{
-				transform: `rotate3d(0,0,1,${rotate}deg)`,
-			}">
+		<div class="wrapper" :style="{transform: `rotate3d(0,0,1,${rotate}deg)`}">
 			<div
 				class="fill"
 				:class="{ select: result == idx }"
@@ -153,68 +151,6 @@ export default Vue.extend({
 			let x5 = Math.cos(endAngle);
 			let y5 = Math.sin(endAngle);
 
-			//dev code
-			// this.$nextTick(() => {
-			// 	let p1 = document.createElement("p");
-			// 	p1.style.position = "absolute";
-			// 	p1.style.zIndex = "100";
-			// 	p1.style.width = "10px";
-			// 	p1.style.height = "10px";
-			// 	p1.style.backgroundColor = "red";
-			// 	p1.style.top = 200 + y1 * 200 + "px";
-			// 	p1.style.left = 200 + x1 * 200 + "px";
-			// 	p1.style.color = "white";
-			// 	p1.innerText = idx.toString();
-			// 	this.$el.appendChild(p1);
-
-			// 	let p2 = document.createElement("p");
-			// 	p2.style.position = "absolute";
-			// 	p2.style.zIndex = "100";
-			// 	p2.style.width = "15px";
-			// 	p2.style.height = "10px";
-			// 	p2.style.backgroundColor = "green";
-			// 	p2.style.top = 200 + y2 * 200 + "px";
-			// 	p2.style.left = 200 + x2 * 200 + "px";
-			// 	p2.style.color = "white";
-			// 	p2.innerText = idx.toString();
-			// 	this.$el.appendChild(p2);
-
-			// 	let p3 = document.createElement("p");
-			// 	p3.style.position = "absolute";
-			// 	p3.style.zIndex = "100";
-			// 	p3.style.width = "20px";
-			// 	p3.style.height = "10px";
-			// 	p3.style.backgroundColor = "blue";
-			// 	p3.style.top = 200 + y3 * 200 + "px";
-			// 	p3.style.left = 200 + x3 * 200 + "px";
-			// 	p3.style.color = "white";
-			// 	p3.innerText = idx.toString();
-			// 	this.$el.appendChild(p3);
-
-			// 	let p4 = document.createElement("p");
-			// 	p4.style.position = "absolute";
-			// 	p4.style.zIndex = "100";
-			// 	p4.style.width = "20px";
-			// 	p4.style.height = "10px";
-			// 	p4.style.backgroundColor = "yellow";
-			// 	p4.style.top = 200 + y4 * 200 + "px";
-			// 	p4.style.left = 200 + x4 * 200 + "px";
-			// 	p4.style.color = "white";
-			// 	p4.innerText = idx.toString();
-			// 	this.$el.appendChild(p4);
-
-			// 	let p5 = document.createElement("p");
-			// 	p5.style.position = "absolute";
-			// 	p5.style.zIndex = "100";
-			// 	p5.style.width = "20px";
-			// 	p5.style.height = "10px";
-			// 	p5.style.backgroundColor = "cyan";
-			// 	p5.style.top = 200 + y5 * 200 + "px";
-			// 	p5.style.left = 200 + x5 * 200 + "px";
-			// 	p5.style.color = "white";
-			// 	p5.innerText = idx.toString();
-			// 	this.$el.appendChild(p5);
-			// });
 			let polygonPath =
 				"50% 50%," +
 				`${50 + x1 * 50}% ${50 + y1 * 50}%,` +

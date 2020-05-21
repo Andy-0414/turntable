@@ -16,32 +16,32 @@ export default Vue.extend({
 			items: [
 				{
 					content: "1",
-					weight: 1,
+					weight: 1
 				},
 				{
 					content: "2",
-					weight: 1,
+					weight: 1
 				},
 				{
 					content: "3",
-					weight: 1,
+					weight: 1
 				},
 				{
 					content: "4",
-					weight: 1,
+					weight: 1
 				},
 				{
 					content: "5",
-					weight: 1,
-				},
-			] as TurntableItem[],
+					weight: 1
+				}
+			] as TurntableItem[]
 		};
 	},
 	components: {
 		Turntable: TurntableVue,
-		TurntableItemList: TurntableItemListVue,
+		TurntableItemList: TurntableItemListVue
 	},
-	methods: {},
+	methods: {}
 });
 </script>
 
